@@ -1,24 +1,66 @@
 def select_books_titles_and_years_in_first_series_order_by_year
-  "Write your SQL query here"
+  "SELECT title, year 
+  FROM books 
+  WHERE series_id=1 
+  ORDER BY year;"
 end
 
 def select_name_and_motto_of_char_with_longest_motto
-  "Write your SQL query here"
+  "SELECT name, motto 
+  FROM characters 
+  ORDER BY LENGTH(motto) DESC 
+  LIMIT 1;"
 end
 
 
 def select_value_and_count_of_most_prolific_species
-  "Write your SQL query here"
+  #prolific meaning one that occurs the most often
+  #table will have species scattered about, so want to rearrange table to group by species instead of id
+  #if just count species will get number of species, want to group together and then once grouped together order by one that has the most
+  # ORDER BY COUNT(species) DESC #don’t want to order by species, want to order by which one is most prolific
+  
+  "SELECT species, COUNT(*) 
+  FROM characters 
+  GROUP BY species 
+  ORDER BY COUNT(species) DESC 
+  LIMIT 1;"
 end
 
 def select_name_and_series_subgenres_of_authors
-  "Write your SQL query here"
+  # ON series.author_id = authors.id #always need to tell it what to join on, connects it
+
+  
+  "SELECT authors.name, subgenres.name 
+  FROM authors 
+  JOIN series 
+  ON series.author_id = authors.id 
+  JOIN subgenres 
+  ON series.subgenre_id = subgenres.id;"
 end
 
 def select_series_title_with_most_human_characters
-  "Write your SQL query here"
+  #want to return title of series that has most species of human
+
+  # FROM series #will need to figure out what titles to return based on the characters…doing series first b/c only care about series info and characters will narrow it down
+  "SELECT series.title
+  FROM series
+  JOIN books
+  ON books.series_id = series.id
+  JOIN character_books
+  ON character_books.book_id = books.id
+  JOIN characters
+  ON character_books.character_id = characters.id
+  WHERE characters.species = 'human'
+  GROUP BY series.title
+  ORDER BY COUNT(*) DESC
+  LIMIT 1;"
 end
 
 def select_character_names_and_number_of_books_they_are_in
-  "Write your SQL query here"
+  "SELECT characters.name, COUNT(*) as book_count 
+  FROM character_books 
+  JOIN characters 
+  ON character_books.character_id = characters.id 
+  GROUP BY characters.name 
+  ORDER BY book_count DESC, characters.name ASC;"
 end
